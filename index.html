@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Audio Vizualizer</title>
+</head>
+<body>
+
+<canvas id="ctx"></canvas>
+
+<script src="js/three.min.js"></script>
+<script>
+var canvas = document.getElementById('ctx');
+var ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.font = '30px Arial';
+
+ctx.fillStyle = 'black';
+ctx.fillRect(40, 40, 40, 40);
+
+window.addEventListener('resize', resizeCanvas, false);
+
+function resizeCanvas(){
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+}
+
+</script>
+
+</body>
+</html>
