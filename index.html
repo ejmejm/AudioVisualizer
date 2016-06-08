@@ -63,7 +63,6 @@ function setupAudioNodes(data) {
 function loadSound(url) {
 
 	analyser = audioCtx.createAnalyser();
-	analyser.smoothingTimeConstant = 0.65;
 	analyser.fftSize = 1024;
 
 	analyser.connect(audioCtx.destination);
@@ -94,8 +93,8 @@ function draw(){
 	  var x = 0;
 
 	  for(var i = 0; i < bufferLength; i++) {
-		  barHeight = dataArray[i]*2;
-		  ctx.fillStyle = 'rgb(' + (barHeight/2+100) + ',50,50)';
+		  barHeight = dataArray[i];
+		  ctx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
 	    ctx.fillRect(x, canvas.height-barHeight/2, barWidth, barHeight/2);
 
 	    x += barWidth + 1;
