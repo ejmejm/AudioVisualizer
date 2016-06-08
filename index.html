@@ -9,21 +9,146 @@
 <canvas id="ctx"></canvas>
 
 <script src="js/three.min.js"></script>
+<script src="js/dropzone.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script>
 var canvas = document.getElementById('ctx');
 var ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-ctx.font = '30px Arial';
-
-ctx.fillStyle = 'black';
-ctx.fillRect(40, 40, 40, 40);
+ctx.font = '60px Veranda';
+ctx.fillStyle = 'rgb(0, 0, 0)';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+var currentText = 'Please drag and drop a song';
+var textColor = 'rgb(150, 150, 150)';
+ctx.fillStyle = textColor;
+ctx.textAlign = 'center';
+ctx.fillText(currentText, canvas.width/2, canvas.height/2);
 
 window.addEventListener('resize', resizeCanvas, false);
+document.addEventListener('drop', onDocumentDrop, false);
+document.addEventListener('dragover', onDocumentDragOver, false);
+document.addEventListener('dragleave', onDocumentDragLeave, false);
+
+var musicQueued = false;
+
+draw();
+
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+var audioBuffer;
+var sourceNode;
+var analyser;
+var bufferLength;
+var dataArray;
+
+function setupAudioNodes(data) {
+	// create a buffer source node
+	sourceNode = audioCtx.createBufferSource();
+	audioCtx.controls = false;
+	sourceNode.controls = false;
+	if(audioCtx.decodeAudioData) {
+		audioCtx.decodeAudioData(data, function(buffer) {
+		sourceNode.buffer = buffer;
+		loadSound();
+	}, function(e) {
+			 console.log(e);
+		 });
+	} else {
+		source.buffer = audioContext.createBuffer(data, false);
+		loadSound();
+	}
+}
+
+function loadSound(url) {
+
+	analyser = audioCtx.createAnalyser();
+	analyser.smoothingTimeConstant = 0.65;
+	analyser.fftSize = 1024;
+
+	analyser.connect(audioCtx.destination);
+	sourceNode.connect(analyser);
+	sourceNode.start(0);
+
+	bufferLength = analyser.frequencyBinCount;
+	dataArray = new Uint8Array(bufferLength);
+
+	musicQueued = true;
+}
+
+function draw(){
+	var drawVisual = requestAnimationFrame(draw);
+	if(!musicQueued){
+		ctx.fillStyle = 'rgb(0, 0, 0)';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = textColor;
+		ctx.textAlign = 'center';
+		ctx.fillText(currentText, canvas.width/2, canvas.height/2);
+	}else{
+		analyser.getByteFrequencyData(dataArray);
+		ctx.fillStyle = 'rgb(0, 0, 0)';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		var barWidth = (canvas.width / bufferLength) * 2.5;
+	  var barHeight;
+	  var x = 0;
+
+	  for(var i = 0; i < bufferLength; i++) {
+		  barHeight = dataArray[i]*2;
+		  ctx.fillStyle = 'rgb(' + (barHeight/2+100) + ',50,50)';
+	    ctx.fillRect(x, canvas.height-barHeight/2, barWidth, barHeight/2);
+
+	    x += barWidth + 1;
+	  }
+	}
+}
+
+// log if an error occurs
+function onError(e) {
+		console.log(e);
+}
 
 function resizeCanvas(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+}
+
+function onDocumentDrop(file) {
+	file.stopPropagation();
+	file.preventDefault();
+
+	currentText = 'Loading...';
+	textColor = 'rgb(150, 150, 150)';
+
+	//clean up previous mp3
+	if (sourceNode) sourceNode.disconnect();
+	var droppedFiles = file.dataTransfer.files;
+
+	var reader = new FileReader();
+
+	reader.onload = function(fileEvent) {
+		var data = fileEvent.target.result;
+		setupAudioNodes(data);
+	};
+
+	reader.readAsArrayBuffer(droppedFiles[0]);
+}
+
+function onDocumentDragOver(file) {
+	console.log('test');
+	file.stopPropagation();
+	file.preventDefault();
+	currentText = 'Please drag and drop a song';
+	textColor = 'rgb(230, 230, 230)';
+	return false;
+}
+
+function onDocumentDragLeave(file) {
+	file.stopPropagation();
+	file.preventDefault();
+	currentText = 'Please drag and drop a song';
+	textColor = 'rgb(150, 150, 150)';
+	return false;
 }
 
 </script>
