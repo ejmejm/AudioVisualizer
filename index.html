@@ -9,9 +9,13 @@
 <canvas id="ctx"></canvas>
 
 <script src="js/three.min.js"></script>
-<script src="js/dropzone.js"></script>
+<script src="js/visualBars.js"></script>
+<script src="js/visualThreeDWaves.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script>
+
+var ThreeD = true;
+
 var canvas = document.getElementById('ctx');
 var ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -25,12 +29,18 @@ ctx.fillStyle = textColor;
 ctx.textAlign = 'center';
 ctx.fillText(currentText, canvas.width/2, canvas.height/2);
 
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+var scene;
+var camera;
+
 window.addEventListener('resize', resizeCanvas, false);
 document.addEventListener('drop', onDocumentDrop, false);
 document.addEventListener('dragover', onDocumentDragOver, false);
 document.addEventListener('dragleave', onDocumentDragLeave, false);
 
-var musicQueued = false;
+var state = 'chooseSong';
+var playStyle = 'visualBars';
 
 draw();
 
@@ -63,7 +73,7 @@ function setupAudioNodes(data) {
 function loadSound(url) {
 
 	analyser = audioCtx.createAnalyser();
-	analyser.fftSize = 1024;
+	analyser.fftSize = 512;
 
 	analyser.connect(audioCtx.destination);
 	sourceNode.connect(analyser);
@@ -72,33 +82,27 @@ function loadSound(url) {
 	bufferLength = analyser.frequencyBinCount;
 	dataArray = new Uint8Array(bufferLength);
 
-	musicQueued = true;
+	if(ThreeD)
+		visualThreeDWavesSetup();
+	state = 'play';
 }
 
 function draw(){
-	var drawVisual = requestAnimationFrame(draw);
-	if(!musicQueued){
+	requestAnimationFrame(draw);
+	if(state == 'chooseSong'){
 		ctx.fillStyle = 'rgb(0, 0, 0)';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = textColor;
 		ctx.textAlign = 'center';
 		ctx.fillText(currentText, canvas.width/2, canvas.height/2);
-	}else{
+	}
+	else if(state == 'chooseVisual'){
+
+	}
+	else if(state == 'play'){
 		analyser.getByteFrequencyData(dataArray);
-		ctx.fillStyle = 'rgb(0, 0, 0)';
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-		var barWidth = (canvas.width / bufferLength) * 2.5;
-	  var barHeight;
-	  var x = 0;
-
-	  for(var i = 0; i < bufferLength; i++) {
-		  barHeight = Math.pow(dataArray[i], 1.2);
-		  ctx.fillStyle = 'rgb(' + (Math.pow(barHeight, 1/1.2)+100) + ',50,50)';
-	    ctx.fillRect(x, canvas.height-barHeight/2, barWidth, barHeight/2);
-
-	    x += barWidth + 1;
-	  }
+		visualThreeDWavesRender();
+		//visualBars();
 	}
 }
 
@@ -107,9 +111,19 @@ function onError(e) {
 		console.log(e);
 }
 
+function threejsSetup(){
+	$('#ctx').hide();
+	document.body.appendChild(renderer.domElement);
+	scene = new THREE.Scene();
+
+	camera = new THREE.PerspectiveCamera(75,
+	window.innerWidth / window.innerHeight, 0.1, 1000);
+}
+
 function resizeCanvas(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function onDocumentDrop(file) {
@@ -134,7 +148,6 @@ function onDocumentDrop(file) {
 }
 
 function onDocumentDragOver(file) {
-	console.log('test');
 	file.stopPropagation();
 	file.preventDefault();
 	currentText = 'Please drag and drop a song';
