@@ -9,6 +9,7 @@
 <canvas id="ctx"></canvas>
 
 <script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
 <script src="js/visualBars.js"></script>
 <script src="js/visualThreeDWaves.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
@@ -55,6 +56,8 @@ var dataArray;
 function setupAudioNodes(data) {
 	// create a buffer source node
 	sourceNode = audioCtx.createBufferSource();
+	//gainNode = audioCtx.createGain();
+	//gainNode.value = 20;
 	audioCtx.controls = false;
 	sourceNode.controls = false;
 	if(audioCtx.decodeAudioData) {
@@ -73,7 +76,8 @@ function setupAudioNodes(data) {
 function loadSound(url) {
 
 	analyser = audioCtx.createAnalyser();
-	analyser.fftSize = 512;
+	analyser.fftSize = 256;
+	//analyser.smoothingTimeConstant = 0.8;
 
 	analyser.connect(audioCtx.destination);
 	sourceNode.connect(analyser);
@@ -117,13 +121,15 @@ function threejsSetup(){
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera(75,
-	window.innerWidth / window.innerHeight, 0.1, 1000);
+	window.innerWidth / window.innerHeight, 0.1, 100000);
 }
 
 function resizeCanvas(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	//camera.aspect = window.innerWidth / window.innerHeight;
+	//camera.updateProjectionMatrix();
 }
 
 function onDocumentDrop(file) {
