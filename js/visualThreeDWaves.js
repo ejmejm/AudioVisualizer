@@ -75,7 +75,6 @@ function updatePoints() { //Issue here is that all elements of points (not point
     var angle = Math.atan2(0, 1) - Math.atan2(v.y, v.x); //Angle between point and x axis
     if(angle < 0)
       angle += (2 * Math.PI); //Correct angle
-    console.log(Math.floor(vDist));
     v.z = points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))];
   }
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
