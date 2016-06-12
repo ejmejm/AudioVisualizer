@@ -61,9 +61,11 @@ function calculateInitialPoints() {
   }
 }
 
-function updatePoints() {
-  if(waveIndex % 3 == 0){
-    points.pop();
+function updatePoints() { //Issue here is that all elements of points (not points[]) are the same issue could also be in calculateInitialPoints when I create array, if they are pointers to each other already (really dont think so though because they arent the same until we eventially reach the element by shifting)
+  if(waveIndex % 25 == 0){ //Am I setting pointers equal to each other, or just values? Pointers would be an issue
+
+
+    //points.pop();
     points.unshift(dataArray);
   }
 
@@ -73,6 +75,7 @@ function updatePoints() {
     var angle = Math.atan2(0, 1) - Math.atan2(v.y, v.x); //Angle between point and x axis
     if(angle < 0)
       angle += (2 * Math.PI); //Correct angle
+    console.log(Math.floor(vDist));
     v.z = points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))];
   }
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
