@@ -2,7 +2,7 @@ var water;
 var controls;
 
 
-var separation = 10;
+var separation = 15;
 var amountX = 200; //Must be divisible by 2
 var amountY = 200; //Must be divisible by 2
 var amountWaves = 200;
@@ -61,13 +61,9 @@ function calculateInitialPoints() {
   }
 }
 
-function updatePoints() { //Issue here is that all elements of points (not points[]) are the same issue could also be in calculateInitialPoints when I create array, if they are pointers to each other already (really dont think so though because they arent the same until we eventially reach the element by shifting)
-  if(waveIndex % 25 == 0){ //Am I setting pointers equal to each other, or just values? Pointers would be an issue
-
-
-    //points.pop();
-    points.unshift(dataArray);
-  }
+function updatePoints() {
+  points.pop();
+  points.unshift(dataArray.slice());
 
   for(var i = 0; i < geometry.vertices.length; i++) {
     var v = geometry.vertices[i];
