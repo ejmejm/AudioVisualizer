@@ -2,7 +2,7 @@ var water;
 var controls;
 
 
-var separation = 15;
+var separation = 30;
 var amountX = 200; //Must be divisible by 2
 var amountY = 200; //Must be divisible by 2
 var amountWaves = 200;
@@ -76,7 +76,7 @@ function updatePoints() {
   }
   //var strengthFade = 255 - strengthRatio;
   var colorFade = 6;
-  water.material.color = new THREE.Color("rgb(" + Math.max(strengthRatio, colorFade) + ", " + colorFade + ", " + colorFade + ")");
+  water.material.color = new THREE.Color("rgb(" + colorFade + ", " + Math.max(strengthRatio, colorFade) + ", " + colorFade + ")");
   //console.log("rgb(255, " + strengthFade + ", " + strengthFade + ")");
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
   water.material.needsUpdate = true;
