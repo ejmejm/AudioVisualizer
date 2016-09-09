@@ -74,9 +74,10 @@ function updatePoints() {
       angle += (2 * Math.PI); //Correct angle
     v.z = points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))];
   }
-  var strengthFade = 255 - strengthRatio;
-  water.material.color = new THREE.Color("rgb(255, " + strengthFade + ", " + strengthFade + ")");
-  console.log("rgb(255, " + strengthFade + ", " + strengthFade + ")");
+  //var strengthFade = 255 - strengthRatio;
+  var colorFade = 6;
+  water.material.color = new THREE.Color("rgb(" + Math.max(strengthRatio, colorFade) + ", " + colorFade + ", " + colorFade + ")");
+  //console.log("rgb(255, " + strengthFade + ", " + strengthFade + ")");
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
   water.material.needsUpdate = true;
   geometry.verticesNeedUpdate = true;
