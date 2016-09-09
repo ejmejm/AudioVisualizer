@@ -51,6 +51,7 @@ var audioBuffer;
 var sourceNode;
 var analyser;
 var bufferLength;
+var preDataArray;
 var dataArray;
 
 function setupAudioNodes(data) {
@@ -84,7 +85,7 @@ function loadSound(url) {
 	sourceNode.start(0);
 
 	bufferLength = analyser.frequencyBinCount;
-	dataArray = new Uint8Array(bufferLength);
+	preDataArray = new Uint8Array(bufferLength);
 
 	if(ThreeD)
 		visualThreeDWavesSetup();
@@ -104,7 +105,50 @@ function draw(){
 
 	}
 	else if(state == 'play'){
-		analyser.getByteFrequencyData(dataArray);
+		analyser.getByteFrequencyData(preDataArray);
+		var zeroEndIndex = 0;
+		var maxZeroCount = 0;
+		var zeroCount = 0;
+		for(var i = 0; i < preDataArray.length; i++){
+			if(preDataArray[i] == 0){
+				zeroCount++;
+				if(zeroCount >= maxZeroCount){
+					maxZeroCount = zeroCount;
+					zeroEndIndex = i;
+				}
+			}else{
+				zeroCount = 0;
+			}
+		}
+
+		var shouldGen = false;
+		if(zeroEndIndex == preDataArray.length - 1 && maxZeroCount <= preDataArray.length / 2)
+			shouldGen = true;
+
+		dataArray = new Uint8Array(bufferLength);
+
+		if(shouldGen){
+			for(var i = 0; i < dataArray.length - maxZeroCount; i++){
+				dataArray[i] = preDataArray[i];
+			}
+			//console.log(dataArray[dataArray.length - maxZeroCount - 2]);
+			for(var i = dataArray.length - maxZeroCount; i < dataArray.length; i++){
+				dataArray[i] = dataArray[dataArray.length - maxZeroCount - (i - (dataArray.length - maxZeroCount))] + Math.random();
+			}
+			dataArray[dataArray.length - maxZeroCount - 1] = dataArray[dataArray.length - maxZeroCount - 2] + Math.random();
+			dataArray[dataArray.length - maxZeroCount] = dataArray[dataArray.length - maxZeroCount + 1] + Math.random();
+		}else{
+			for(var i = 0; i < dataArray.length; i++){
+				dataArray[i] = preDataArray[i];
+			}
+		}
+
+		var mergeValue = 8; //Higher value = more merging between 0 and 127 indices
+		for(var i = mergeValue; i >= 0; i--){
+			dataArray[i] = (dataArray[dataArray.length - 1] + dataArray[mergeValue + 1]) / 2 + Math.random();
+		}
+		dataArray[0] = (dataArray[1] + dataArray[dataArray.length - 1]) / 2
+
 		visualThreeDWavesRender();
 		//visualBars();
 	}
