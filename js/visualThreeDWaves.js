@@ -37,7 +37,8 @@ function visualThreeDWavesSetup(){
   camera.position.y = 500;
 
   geometry = new THREE.PlaneGeometry(width, height, amountX, amountY);
-  var material = new THREE.MeshBasicMaterial({ color: 0x41b1d4, wireframe: true });
+  var colorr = new THREE.Color("rgb(255, 255, 255)");
+  var material = new THREE.MeshBasicMaterial({ color: colorr, wireframe: true });
   water = new THREE.Mesh(geometry, material);
 
   calculateInitialPoints();
@@ -73,6 +74,7 @@ function updatePoints() {
       angle += (2 * Math.PI); //Correct angle
     v.z = points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))];
   }
+  water.material.color = new THREE.Color("rgb(" + strengthRatio + ", 0, 0)");
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
   //water.material.needsUpdate = true;
   geometry.verticesNeedUpdate = true;

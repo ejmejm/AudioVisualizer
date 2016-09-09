@@ -109,6 +109,11 @@ function draw(){
 		var zeroEndIndex = 0;
 		var maxZeroCount = 0;
 		var zeroCount = 0;
+
+		var strength = 0;
+		var maxStrength = dataArray.length * 255;
+		var strengthRatio = 0;
+
 		for(var i = 0; i < preDataArray.length; i++){
 			if(preDataArray[i] == 0){
 				zeroCount++;
@@ -149,6 +154,12 @@ function draw(){
 		}
 		dataArray[0] = (dataArray[1] + dataArray[dataArray.length - 1]) / 2
 
+		for(int i = 0; i < dataArray; i++){
+			strength += dataArray[i];
+		}
+
+		strengthRatio = (strength / maxStrength) * 255;
+
 		visualThreeDWavesRender();
 		//visualBars();
 	}
@@ -156,7 +167,7 @@ function draw(){
 
 // log if an error occurs
 function onError(e) {
-		console.log(e);
+	console.log(e);
 }
 
 function threejsSetup(){
