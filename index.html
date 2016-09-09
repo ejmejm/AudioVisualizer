@@ -53,6 +53,7 @@ var analyser;
 var bufferLength;
 var preDataArray;
 var dataArray;
+var strengthRatio;
 
 function setupAudioNodes(data) {
 	// create a buffer source node
@@ -110,10 +111,6 @@ function draw(){
 		var maxZeroCount = 0;
 		var zeroCount = 0;
 
-		var strength = 0;
-		var maxStrength = dataArray.length * 255;
-		var strengthRatio = 0;
-
 		for(var i = 0; i < preDataArray.length; i++){
 			if(preDataArray[i] == 0){
 				zeroCount++;
@@ -154,11 +151,14 @@ function draw(){
 		}
 		dataArray[0] = (dataArray[1] + dataArray[dataArray.length - 1]) / 2
 
-		for(int i = 0; i < dataArray; i++){
+		var strength = 0;
+		var maxStrength = dataArray.length * 255;
+
+		for(var i = 0; i < dataArray.length; i++){
 			strength += dataArray[i];
 		}
 
-		strengthRatio = (strength / maxStrength) * 255;
+		strengthRatio = Math.round((strength / maxStrength) * 255);
 
 		visualThreeDWavesRender();
 		//visualBars();

@@ -76,7 +76,7 @@ function updatePoints() {
   }
   water.material.color = new THREE.Color("rgb(" + strengthRatio + ", 0, 0)");
   //water.material = new THREE.MeshBasicMaterial({ color: 'rgb(' + points[Math.floor(vDist)][Math.floor((angle * bufferLength) / (2 * Math.PI))] + ', 50, 50)', wireframe: true });
-  //water.material.needsUpdate = true;
+  water.material.needsUpdate = true;
   geometry.verticesNeedUpdate = true;
   waveIndex++;
 }
