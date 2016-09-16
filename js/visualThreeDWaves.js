@@ -11,7 +11,7 @@ var waveIndex = 0;
 var width  = separation * amountX;
 var height = separation * amountY;
 
-var geometry, water, points = [];
+var geometry, water, points = [], strength = [];
 
 function visualThreeDWavesSetup(){
   threejsSetup();
@@ -42,6 +42,7 @@ function visualThreeDWavesSetup(){
   water = new THREE.Mesh(geometry, material);
 
   calculateInitialPoints();
+  calculateInitialStrength();
 
   //water.rotation.x = Math.PI / -2;
   scene.add(water);
@@ -51,6 +52,13 @@ function visualThreeDWavesRender(){
   controls.update();
   updatePoints();
 	renderer.render(scene, camera);
+}
+
+function calculateInitialStrength() {
+	var vDistMax = Math.pow(Math.pow(amountX + separation, 2) + Math.pow(amountY + separation, 2), 0.5) / 2;
+	for(var i = 0; i < vDistMax; i++){
+		strength[i] = 0;
+	}
 }
 
 function calculateInitialPoints() {
@@ -65,6 +73,8 @@ function calculateInitialPoints() {
 function updatePoints() {
   points.pop();
   points.unshift(dataArray.slice());
+  strength.pop();
+  strength.unshift(strengthRatio);
 
   for(var i = 0; i < geometry.vertices.length; i++) {
     var v = geometry.vertices[i];
@@ -72,7 +82,7 @@ function updatePoints() {
     var angle = Math.atan2(0, 1) - Math.atan2(v.y, v.x); //Angle between point and x axis
     if(angle < 0)
       angle += (2 * Math.PI); //Correct angle
-    v.z = points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))];
+    v.z = Math.pow(points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))], strength[Math.floor(vDist)] / 255 * 1.6);
   }
   //var strengthFade = 255 - strengthRatio;
   var colorFade = 6;
