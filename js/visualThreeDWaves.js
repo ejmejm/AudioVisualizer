@@ -82,7 +82,7 @@ function updatePoints() {
     var angle = Math.atan2(0, 1) - Math.atan2(v.y, v.x); //Angle between point and x axis
     if(angle < 0)
       angle += (2 * Math.PI); //Correct angle
-    v.z = Math.pow(points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))], strength[Math.floor(vDist)] / 255 * 1.6);
+    v.z = Math.pow(points[Math.floor(vDist)][Math.floor((angle * dataArray.length) / (2 * Math.PI))], strength[Math.floor(vDist)] / 255 * 1.75);
   }
   //var strengthFade = 255 - strengthRatio;
   var colorFade = 6;
