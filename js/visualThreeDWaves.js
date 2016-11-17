@@ -2,10 +2,10 @@ var water;
 var controls;
 
 
-var separation = 30;
-var amountX = 200; //Must be divisible by 2
-var amountY = 200; //Must be divisible by 2
-var amountWaves = 200;
+var separation = 60;
+var amountX = 100; //Must be divisible by 2
+var amountY = 100; //Must be divisible by 2
+var amountWaves = 100;
 var waveIndex = 0;
 
 var width  = separation * amountX;
